@@ -1,0 +1,43 @@
+const int rainSensorPin = A0; // Analog pin for rain sensor
+const int buzzerPin = 8; // Digital pin for buzzer
+const int trigPin = 9; // Digital pin for ultrasonic sensor trigger
+const int echoPin = 10; // Digital pin for ultrasonic sensor echo
+
+long duration; // Variable for pulse duration
+int distance; // Variable to store distance measurement
+
+void setup() {
+  pinMode(buzzerPin, OUTPUT); // Set buzzer pin as output
+  pinMode(trigPin, OUTPUT); // Set trigger pin as output
+  pinMode(echoPin, INPUT); // Set echo pin as input
+  Serial.begin(9600); // Start serial communication for debugging (optional)
+}
+
+void loop() {
+  // Rain detection
+  int rainSensorValue = analogRead(rainSensorPin);
+
+  // Check for rain
+  if (rainSensorValue < 500) { // Rain detected (adjust threshold as needed)
+    digitalWrite(buzzerPin, HIGH); // Activate buzzer with continuous tone
+  } else{
+    digitalWrite(buzzerPin, LOW);
+  }
+
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    duration = pulseIn(echoPin, HIGH);
+    distance = duration * 0.034 / 2; // Calculate distance in cm
+
+    // Check for object proximity
+    if (distance < 10) { // Object detected within 10 cm (adjust threshold)
+      digitalWrite(buzzerPin, HIGH); // Activate buzzer with short beeps
+    } else {
+      digitalWrite(buzzerPin, LOW); // Deactivate buzzer
+    }
+
+  delay(500); // Delay between readings
+}
